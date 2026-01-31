@@ -78,9 +78,13 @@ All metrics are computed using **out-of-sample data only** where applicable.
 ## Project Structure
 
 ├── data/
+
 │ └── aapl.csv
+
 ├── main.py
+
 ├── README.md
+
 └── .gitignore
 
 
