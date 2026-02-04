@@ -79,13 +79,43 @@ def run_ma_strategy(df, fast=20, slow=50):
     plt.show()
 
     # Simple performance printout
-    bh_total = df["cum_buy_hold"].iloc[-1] - 1
-    strat_total = df["cum_strategy"].iloc[-1] - 1
+    bh_metrics = compute_metrics(df["return"])
+    strat_metrics = compute_metrics(df["strategy_return"])
 
-    print(f"\nBuy & Hold Total Return: {bh_total:.2%}")
-    print(f"MA Strategy Total Return: {strat_total:.2%}")
+    print("\nBuy & Hold Metrics:")
+    for k, v in bh_metrics.items():
+        print(f"{k}: {v:.2%}")
+
+    print("\nMA Strategy Metrics:")
+    for k, v in strat_metrics.items():
+        print(f"{k}: {v:.2%}")
+
 
     return df
+
+def compute_metrics(returns):
+    returns = returns.dropna()
+
+    # Total return
+    total_return = (1 + returns).prod() - 1
+
+    # Equity curve
+    equity = (1 + returns).cumprod()
+
+    # Max drawdown
+    rolling_max = equity.cummax()
+    drawdown = (equity - rolling_max) / rolling_max
+    max_drawdown = drawdown.min()
+
+    # Win rate
+    win_rate = (returns > 0).mean()
+
+    return {
+        "total_return": total_return,
+        "max_drawdown": max_drawdown,
+        "win_rate": win_rate,
+    }
+
 
 
 def main():
