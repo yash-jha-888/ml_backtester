@@ -116,14 +116,36 @@ def compute_metrics(returns):
         "win_rate": win_rate,
     }
 
+def eda_returns(df):
+    print("\nEDA: Returns statistics")
+    print(df["return"].describe())
+
+    plt.figure(figsize=(6, 4))
+    df["return"].hist(bins=50)
+    plt.title("Distribution of Daily Returns")
+    plt.tight_layout()
+    plt.show()
+
+def eda_labels(df):
+    labels = (df["return"] > 0).astype(int)
+    print("\nEDA: Up vs Down days")
+    print(labels.value_counts(normalize=True))
+
+
+
 
 
 def main():
     df = load_data()
     df = compute_returns(df)
 
+    RUN_EDA=True
     RUN_PLOTS = False
-    RUN_STRATEGY = True
+    RUN_STRATEGY = False
+
+    if RUN_EDA:
+        eda_returns(df)
+        eda_labels(df)
 
     if RUN_PLOTS:
         plot_price_and_returns(df)
